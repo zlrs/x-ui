@@ -171,7 +171,7 @@ func (s *ServerService) GetStatus(lastStatus *Status) *Status {
 }
 
 func (s *ServerService) GetXrayVersions() ([]string, error) {
-	url := "https://api.github.com/repos/XTLS/Xray-core/releases"
+	url := "https://api.github.com/repos/XTLS/Xray-core/releases?per_page=100"
 	resp, err := http.Get(url)
 	if err != nil {
 		return nil, err
