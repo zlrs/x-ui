@@ -95,6 +95,7 @@ func resetSetting() {
 func showSetting(show bool) {
 	if show {
 		settingService := service.SettingService{}
+		listen_addr, err := settingService.GetListen()
 		port, err := settingService.GetPort()
 		if err != nil {
 			fmt.Println("get current port fialed,error info:", err)
@@ -112,6 +113,7 @@ func showSetting(show bool) {
 		fmt.Println("current pannel settings as follows:")
 		fmt.Println("username:", username)
 		fmt.Println("userpasswd:", userpasswd)
+		fmt.Println("listen:", listen_addr)
 		fmt.Println("port:", port)
 	}
 }
