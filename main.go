@@ -176,7 +176,7 @@ func updateTgbotSetting(tgBotToken string, tgBotChatid int, tgBotRuntime string)
 	}
 }
 
-func updateSetting(port int, username string, password string) {
+func updateSetting(listen_addr string, port int, username string, password string) {
 	err := database.InitDB(config.GetDBPath())
 	if err != nil {
 		fmt.Println(err)
@@ -185,6 +185,14 @@ func updateSetting(port int, username string, password string) {
 
 	settingService := service.SettingService{}
 
+	if listen_addr != "" {
+		err := settingService.SetListen(listen_addr)
+		if err != nil {
+			fmt.Println("set listening address failed:", err)
+		} else {
+			fmt.Printf("set listening address %v success", listen_addr)
+		}
+	}
 	if port > 0 {
 		err := settingService.SetPort(port)
 		if err != nil {
@@ -220,6 +228,7 @@ func main() {
 	v2uiCmd.StringVar(&dbPath, "db", "/etc/v2-ui/v2-ui.db", "set v2-ui db file path")
 
 	settingCmd := flag.NewFlagSet("setting", flag.ExitOnError)
+	var listen_addr string
 	var port int
 	var username string
 	var password string
@@ -231,6 +240,7 @@ func main() {
 	var show bool
 	settingCmd.BoolVar(&reset, "reset", false, "reset all settings")
 	settingCmd.BoolVar(&show, "show", false, "show current settings")
+	settingCmd.StringVar(&listen_addr, "listen", "", "set listening address")
 	settingCmd.IntVar(&port, "port", 0, "set panel port")
 	settingCmd.StringVar(&username, "username", "", "set login username")
 	settingCmd.StringVar(&password, "password", "", "set login password")
@@ -282,7 +292,7 @@ func main() {
 		if reset {
 			resetSetting()
 		} else {
-			updateSetting(port, username, password)
+			updateSetting(listen_addr, port, username, password)
 		}
 		if show {
 			showSetting(show)
