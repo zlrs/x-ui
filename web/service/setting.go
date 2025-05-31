@@ -194,6 +194,10 @@ func (s *SettingService) GetListen() (string, error) {
 	return s.getString("webListen")
 }
 
+func (s *SettingService) SetListen(listen_addr string) error {
+	return s.setString("webListen", listen_addr)
+}
+
 func (s *SettingService) GetTgBotToken() (string, error) {
 	return s.getString("tgBotToken")
 }

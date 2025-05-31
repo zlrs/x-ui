@@ -180,6 +180,18 @@ check_config() {
     LOGI "${info}"
 }
 
+set_listen() {
+    echo && echo -n -e "输入IPv4监听地址: " && read addr
+    if [[ -z "${addr}" ]]; then
+        LOGD "已取消"
+        before_show_menu
+    else
+        /usr/local/x-ui/x-ui setting -listen ${addr}
+        echo -e "设置监听地址完毕，现在请重启面板，并通过新设置的地址 ${green}${addr}${plain} 访问面板"
+        confirm_restart
+    fi
+}
+
 set_port() {
     echo && echo -n -e "输入端口号[1-65535]: " && read port
     if [[ -z "${port}" ]]; then
@@ -512,23 +524,24 @@ show_menu() {
 ————————————————
   ${green}4.${plain} 重置用户名密码
   ${green}5.${plain} 重置面板设置
-  ${green}6.${plain} 设置面板端口
-  ${green}7.${plain} 查看当前面板设置
+  ${green}6.${plain} 设置面板监听地址
+  ${green}7.${plain} 设置面板端口
+  ${green}8.${plain} 查看当前面板设置
 ————————————————
-  ${green}8.${plain} 启动 x-ui
-  ${green}9.${plain} 停止 x-ui
-  ${green}10.${plain} 重启 x-ui
-  ${green}11.${plain} 查看 x-ui 状态
-  ${green}12.${plain} 查看 x-ui 日志
+  ${green}9.${plain} 启动 x-ui
+  ${green}10.${plain} 停止 x-ui
+  ${green}11.${plain} 重启 x-ui
+  ${green}12.${plain} 查看 x-ui 状态
+  ${green}13.${plain} 查看 x-ui 日志
 ————————————————
-  ${green}13.${plain} 设置 x-ui 开机自启
-  ${green}14.${plain} 取消 x-ui 开机自启
+  ${green}14.${plain} 设置 x-ui 开机自启
+  ${green}15.${plain} 取消 x-ui 开机自启
 ————————————————
-  ${green}15.${plain} 一键安装 bbr (最新内核)
-  ${green}16.${plain} 一键申请SSL证书(acme申请)
+  ${green}16.${plain} 一键安装 bbr (最新内核)
+  ${green}17.${plain} 一键申请SSL证书(acme申请)
  "
     show_status
-    echo && read -p "请输入选择 [0-16]: " num
+    echo && read -p "请输入选择 [0-17]: " num
 
     case "${num}" in
     0)
@@ -550,40 +563,43 @@ show_menu() {
         check_install && reset_config
         ;;
     6)
-        check_install && set_port
+        check_install && set_listen
         ;;
     7)
-        check_install && check_config
+        check_install && set_port
         ;;
     8)
-        check_install && start
+        check_install && check_config
         ;;
     9)
-        check_install && stop
+        check_install && start
         ;;
     10)
-        check_install && restart
+        check_install && stop
         ;;
     11)
-        check_install && status
+        check_install && restart
         ;;
     12)
-        check_install && show_log
+        check_install && status
         ;;
     13)
-        check_install && enable
+        check_install && show_log
         ;;
     14)
-        check_install && disable
+        check_install && enable
         ;;
     15)
-        install_bbr
+        check_install && disable
         ;;
     16)
+        install_bbr
+        ;;
+    17)
         ssl_cert_issue
         ;;
     *)
-        LOGE "请输入正确的数字 [0-16]"
+        LOGE "请输入正确的数字 [0-17]"
         ;;
     esac
 }
